@@ -23,7 +23,7 @@ BUILD_DIR="$DIR/build"
 PKG_DIR="$DIR/packages"
 REPOS_DIR="$DIR/repos"
 SRC_DIR="$HOME/src"
-BUILD_LOG="$BUILD_DIR/build.log"
+BUILD_LOG="$DIR/build.log"
 
 echo1 () {
 	echo -e "\e[1;33m$*\e[0m"
@@ -74,7 +74,7 @@ get_source_tar () {
 	local f=`basename "$SRC_TAR_URL"`
 	if ! [ -e $f ]; then
 		echo "Downloading $f from $SRC_TAR_URL"
-		[ -z "$OPT_VERBOSE" ] && local wget_log="-a $BUILD_LOG"
+		[ ! "$OPT_VERBOSE" ] && local wget_log="-a $BUILD_LOG"
 		if ! wget -nc $wget_log "$SRC_TAR_URL" || ! test -e $f; then
 			echo_err "Failed to download $f"
 			return 1
@@ -97,7 +97,7 @@ get_source_git () {
 	fi
 
 	echo "Cloning git repository from $SRC_GIT_URL"
-	if [ -n "$OPT_VERBOSE" ]; then
+	if [ "$OPT_VERBOSE" ]; then
 		git clone "$SRC_GIT_URL" $PKG || return 1
 	else
 		git clone "$SRC_GIT_URL" $PKG >>"$BUILD_LOG" 2>&1 || return 1
@@ -123,33 +123,20 @@ build_package () {
 	echo2 "Get source"
 	get_source || return 1
 
-	if type prepare >/dev/null 2>&1; then
+	if [ "$OPT_VERBOSE" ]; then
 		echo2 "Prepare"
-		if [ -n "$OPT_VERBOSE" ]; then
-			prepare || return 1
-		else
-			prepare >>"$BUILD_LOG" 2>&1 || return 1
-		fi
-	fi
-
-	if [ -n "$OPT_VERBOSE" ]; then
+		prepare || return 1
 		echo2 "Build"
 		build || return 1
 		echo2 "Install"
 		install || return 1
 	else
+		echo2 "Prepare"
+		prepare >>"$BUILD_LOG" 2>&1 || return 1
 		echo2 "Build"
-		build >>"$BUILD_LOG" 2>&1
-		if (($? != 0)); then
-			echo_err "Build failed. Run again with -v or see log."
-			return 1
-		fi
+		build >>"$BUILD_LOG" 2>&1 || return 1
 		echo2 "Install"
-		install >>"$BUILD_LOG" 2>&1
-		if (($? != 0)); then
-			echo_err "Install failed. Run again with -v or see log."
-			return 1
-		fi
+		install >>"$BUILD_LOG" 2>&1 || return 1
 	fi
 
 	unset -f prepare build install
@@ -173,7 +160,19 @@ usage () {
 	echo "Usage:"
 }
 
-while getopts ":hv" OPT; do
+main () {
+	if [ -z "$1" ]; then
+		sysroot_prepare || return 1
+		build_packages || return 1
+	elif [ "$1" = "install" ]; then
+		install_to_target || return 1
+	else
+		echo_err "Unknown command: $1"
+		return 1
+	fi
+}
+
+while getopts ":hvn" OPT; do
 	case $OPT in
 	h)
 		usage
@@ -181,6 +180,9 @@ while getopts ":hv" OPT; do
 		;;
 	v)
 		OPT_VERBOSE=1
+		;;
+	n)
+		OPT_NOCLEAN=1
 		;;
 	\?)
 		echo_err "Invalid Option: $OPTARG"
@@ -190,15 +192,10 @@ while getopts ":hv" OPT; do
 done
 shift $((OPTIND -1))
 
-if [ -z "$1" ]; then
-	sysroot_prepare || exit 1
-	build_packages || exit 1
-elif [ "$1" = "install" ]; then
-	install_to_target || exit 1
+if main $1; then
+	echo1 Done
 else
-	echo_err "Unknown command: $1"
+	[ ! "$OPT_VERBOSE" ] && echo_err "Something went wrong. Run again with -v or see build.log for details."
 	exit 1
 fi
-
-echo1 Done
 
