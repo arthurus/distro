@@ -3,8 +3,8 @@
 CONFIG_SHARED="--host=$TARGET --build=x86_64-pc-linux-gnu --prefix=/usr --exec-prefix=/ --sysconfdir=/etc --disable-nls"
 DIR=$(dirname "`readlink -f \"$0\"`")
 
-BOOT_PART=/dev/sde1
-ROOT_PART=/dev/sde3
+BOOT_PART_NO=1
+ROOT_PART_NO=3
 
 PACKAGES="
 linux-rpi
@@ -52,8 +52,39 @@ install_to_sysroot () {
 	sudo -E make DESTDIR=$SYSROOT install
 }
 
+find_partition_dev () {
+	local dev=$1
+	local part=$2
+	if [ -b "${dev}p$2" ]; then
+		echo "${dev}p$2"
+	elif [ -b "$dev$2" ]; then
+		echo "$dev$2"
+	else
+		return 1
+	fi
+}
+
 install_to_target () {
 	echo1 "Installing to target"
+	if [ -z "$1" ]; then
+		echo_err "Target block device path not provided"
+		exit 1
+	fi
+	TARGET_DEV="$1"
+	if [ ! -b "$TARGET_DEV" ]; then
+		echo_err "Target block device $TARGET_DEV does not exist"
+		exit 1
+	fi
+
+	if ! BOOT_PART=`find_partition_dev $TARGET_DEV $BOOT_PART_NO`; then
+		echo_err "Can't find partition $BOOT_PART_NO on device $TARGET_DEV"
+		exit 1
+	fi
+	if ! ROOT_PART=`find_partition_dev $TARGET_DEV $ROOT_PART_NO`; then
+		echo_err "Can't find partition $BOOT_PART_NO on device $TARGET_DEV"
+		exit 1
+	fi
+
 	sudo umount $BOOT_PART >/dev/null 2>&1
 	sudo umount $ROOT_PART >/dev/null 2>&1
 	# TODO: u-boot, put kernel in main filesystem
