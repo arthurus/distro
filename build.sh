@@ -17,6 +17,7 @@ ncurses
 procps
 vim
 kmod
+u-boot
 "
 
 BUILD_DIR="$DIR/build"
