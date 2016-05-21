@@ -24,6 +24,7 @@ PKG_DIR="$DIR/packages"
 REPOS_DIR="$DIR/repos"
 SRC_DIR="$HOME/src"
 BUILD_LOG="$DIR/build.log"
+BOOTPART_DIR="$BUILD_DIR/bootpart"
 
 echo1 () {
 	echo -e "\e[1;33m$*\e[0m"
@@ -182,9 +183,13 @@ build_package () {
 build_packages () {
 	echo1 "Building packages"
 	rm -f $BUILD_LOG
-	rm -rf $BUILD_DIR && mkdir $BUILD_DIR
-	for PKG in $PACKAGES; do
-		echo -e "\e[1;34m---- $PKG ----\e[0m"
+	local packages="$@"
+	if [ -z "$packages" ]; then
+		rm -rf $BUILD_DIR
+		packages="$PACKAGES"
+	fi
+	mkdir -p "$BUILD_DIR" "$BOOTPART_DIR" || return 1
+	for PKG in $packages; do
 		build_package $PKG || return 1
 	done
 	echo2 "Removing docs"
@@ -197,11 +202,17 @@ usage () {
 }
 
 main () {
-	if [ -z "$1" ]; then
-		sysroot_prepare || return 1
-		build_packages || return 1
+	if [ -z "$1" ] || [ "$1" = "build" ]; then
+		if [ -z "$2" ]; then
+			sysroot_prepare || return 1
+		else
+			shift 1
+		fi
+		build_packages "$@" || return 1
 	elif [ "$1" = "install" ]; then
-		install_to_target || return 1
+		install_to_target "$2" || return 1
+	elif [ "$1" = "bootloader" ]; then
+		setup_bootloader || return 1
 	else
 		echo_err "Unknown command: $1"
 		exit 1
@@ -228,7 +239,7 @@ while getopts ":hvn" OPT; do
 done
 shift $((OPTIND -1))
 
-if main $1; then
+if main "$@"; then
 	echo1 Done
 else
 	[ ! "$OPT_VERBOSE" ] && echo_err "Something went wrong. Run again with -v or see build.log for details."
