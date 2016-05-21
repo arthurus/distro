@@ -77,7 +77,7 @@ get_source_tar () {
 		[ ! "$OPT_VERBOSE" ] && local wget_log="-a $BUILD_LOG"
 		if ! wget -nc $wget_log "$SRC_TAR_URL" || ! test -e $f; then
 			echo_err "Failed to download $f"
-			return 1
+			exit 1
 		fi
 	fi
 
@@ -113,12 +113,17 @@ get_source () {
 		get_source_git
 	else
 		echo_err "No URL to get source"
-		return 1
+		exit 1
 	fi
 }
 
 build_package () {
-	source $PKG_DIR/$PKG.sh || return 1
+	if ! source $PKG_DIR/$PKG.sh; then
+		echo_err "No descriptor file found for package $PKG"
+		exit 1
+	fi
+
+	echo -e "\e[1;34m---- $PKG ----\e[0m"
 
 	echo2 "Get source"
 	get_source || return 1
@@ -168,7 +173,7 @@ main () {
 		install_to_target || return 1
 	else
 		echo_err "Unknown command: $1"
-		return 1
+		exit 1
 	fi
 }
 
