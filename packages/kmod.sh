@@ -11,7 +11,7 @@ build () {
 install () {
 	install_to_sysroot
 	for target in depmod insmod lsmod modinfo modprobe rmmod; do
-	  sudo ln -sv ../bin/kmod $SYSROOT/sbin/$target
+		sudo ln -sv ../bin/kmod $SYSROOT/sbin/$target
 	done
 	sudo ln -sv kmod $SYSROOT/bin/lsmod
 }

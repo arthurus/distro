@@ -1,7 +1,6 @@
 #!/bin/bash
 
 CONFIG_SHARED="--host=$TARGET --build=x86_64-pc-linux-gnu --prefix=/usr --exec-prefix=/ --sysconfdir=/etc --disable-nls"
-DIR=$(dirname "`readlink -f \"$0\"`")
 
 BOOT_PART_NO=1
 ROOT_PART_NO=3
@@ -20,9 +19,10 @@ kmod
 u-boot
 "
 
-BUILD_DIR="$DIR/build"
+DIR=$(dirname "`readlink -f \"$0\"`")
+BUILD_DIR="/opt/arm/distro/build"
 PKG_DIR="$DIR/packages"
-REPOS_DIR="$DIR/repos"
+REPOS_DIR="/opt/arm/distro/repos"
 SRC_DIR="$HOME/src"
 BUILD_LOG="$DIR/build.log"
 BOOTPART_DIR="$BUILD_DIR/bootpart"
@@ -89,14 +89,18 @@ install_to_target () {
 
 	sudo umount $BOOT_PART >/dev/null 2>&1
 	sudo umount $ROOT_PART >/dev/null 2>&1
-	# TODO: u-boot, put kernel in main filesystem
-	sudo mount $BOOT_PART /mnt || return 1
-	sudo cp $REPOS_DIR/linux-rpi/arch/arm/boot/zImage /mnt/kernel.img || return 1
-	sudo umount /mnt
 
+	echo2 "Copying root partition files"
 	sudo mount $ROOT_PART /mnt || return 1
 	sudo rm -rf /mnt/*
 	sudo cp -a $SYSROOT/* /mnt || return 1
+	sudo umount /mnt
+
+	echo2 "Copying boot partition files"
+	sudo mount $BOOT_PART /mnt || return 1
+	# TODO: don't remove everything yet - need firmware package first
+	# sudo rm -rf /mnt/*
+	sudo cp -r $BOOTPART_DIR/* /mnt || return 1
 	sudo umount /mnt
 }
 
@@ -193,7 +197,7 @@ build_packages () {
 	for PKG in $packages; do
 		build_package $PKG || return 1
 	done
-	echo2 "Removing docs"
+	echo1 "Removing docs"
 	sudo rm -rf $SYSROOT/usr/share/doc
 	sudo rm -rf $SYSROOT/usr/share/man
 }
