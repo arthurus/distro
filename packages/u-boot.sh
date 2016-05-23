@@ -26,4 +26,6 @@ install () {
 	echo "$UBOOT_BOOT_SCR" > boot.scr || return 1
 	./tools/mkimage -A arm -O linux -T script -C none -n boot.scr -d boot.scr boot.scr.uimg || return 1
 	cp boot.scr.uimg "$BOOTPART_DIR" || return 1
+	echo "kernel=u-boot.bin" >> "$BOOTPART_DIR/config.txt"
+	echo "boot_delay=0" >> "$BOOTPART_DIR/config.txt"
 }

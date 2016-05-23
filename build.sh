@@ -17,6 +17,7 @@ procps
 vim
 kmod
 u-boot
+firmware
 "
 
 DIR=$(dirname "`readlink -f \"$0\"`")
@@ -98,8 +99,7 @@ install_to_target () {
 
 	echo2 "Copying boot partition files"
 	sudo mount $BOOT_PART /mnt || return 1
-	# TODO: don't remove everything yet - need firmware package first
-	# sudo rm -rf /mnt/*
+	sudo rm -rf /mnt/*
 	sudo cp -r $BOOTPART_DIR/* /mnt || return 1
 	sudo umount /mnt
 }

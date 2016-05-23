@@ -22,7 +22,7 @@ install () {
 	sudo cp arch/arm/boot/$img_name $SYSROOT/boot/$target_img_name || return 1
 	sudo ln -s $target_img_name $SYSROOT/boot/vmlinuz || return 1
 	sudo cp System.map $SYSROOT/boot/System.map-$release || return 1
-	sudo cp arch/arm/boot/dts/bcm2708-rpi-b-plus.dtb $BOOTPART_DIR || return 1
+	cp arch/arm/boot/dts/bcm2708-rpi-b-plus.dtb $BOOTPART_DIR || return 1
 	# TODO: overlays
 	sudo -E make INSTALL_MOD_PATH=$SYSROOT modules_install || return 1
 }
