@@ -20,6 +20,7 @@ kmod
 sysvinit
 lfs-bootscripts
 shadow-utils
+net-tools
 u-boot
 firmware
 "
