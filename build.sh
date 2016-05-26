@@ -11,6 +11,7 @@ bash
 coreutils
 util-linux
 grep
+sed
 findutils
 ncurses
 procps
