@@ -112,19 +112,28 @@ get_source_tar () {
 	cd "$SRC_DIR"
 
 	local f=`basename "$SRC_TAR_URL"`
+	if ! echo $f | grep -q $PKG; then
+		f=$PKG-$f
+	fi
+
 	if ! [ -e $f ]; then
 		echo "Downloading $f from $SRC_TAR_URL"
 		[ ! "$OPT_VERBOSE" ] && local wget_log="-a $BUILD_LOG"
-		if ! wget -nc $wget_log "$SRC_TAR_URL" || ! test -e $f; then
+		if ! wget -nc $wget_log -O $f "$SRC_TAR_URL" || ! test -e $f; then
 			echo_err "Failed to download $f"
 			exit 1
 		fi
 	fi
 
 	cd $BUILD_DIR
+	local tar_dir=`tar tf "$SRC_DIR/$f" | head -1`
+	if [ -d "$tar_dir" ] && [ "$OPT_NOCLEAN" ]; then
+		SRC_EXISTS=1
+		cd "$tar_dir" && return 0
+	fi
 
 	echo "Extracting $f"
-	tar xf "$SRC_DIR/$f" && cd `tar tf "$SRC_DIR/$f" | head -1`
+	tar xf "$SRC_DIR/$f" && cd "$tar_dir"
 }
 
 get_source_git () {
@@ -132,8 +141,8 @@ get_source_git () {
 	cd "$REPOS_DIR"
 
 	if [ -d $PKG ]; then
-		cd $PKG
-		return 0
+		SRC_EXISTS=1
+		cd $PKG && return 0
 	fi
 
 	echo "Cloning git repository from $SRC_GIT_URL"
@@ -147,6 +156,7 @@ get_source_git () {
 }
 
 get_source () {
+	SRC_EXISTS=0
 	if [ -n "$SRC_TAR_URL" ]; then
 		get_source_tar
 	elif [ -n "$SRC_GIT_URL" ]; then
@@ -154,6 +164,18 @@ get_source () {
 	else
 		echo_err "No URL to get source"
 		exit 1
+	fi
+}
+
+do_step () {
+	local step="$1"
+	if [ -z "step" ]; then
+		return 1
+	fi
+	if [ "$OPT_VERBOSE" ]; then
+		$step || return 1
+	else
+		$step >>"$BUILD_LOG" 2>&1 || return 1
 	fi
 }
 
@@ -168,32 +190,30 @@ build_package () {
 	echo2 "Get source"
 	get_source || return 1
 
-	if [ "$OPT_VERBOSE" ]; then
+	if [ ! "$OPT_NOCLEAN" ] || [ $SRC_EXISTS -eq 0 ]; then
 		echo2 "Prepare"
-		prepare || return 1
-		echo2 "Build"
-		build || return 1
-		echo2 "Install"
-		install || return 1
-	else
-		echo2 "Prepare"
-		prepare >>"$BUILD_LOG" 2>&1 || return 1
-		echo2 "Build"
-		build >>"$BUILD_LOG" 2>&1 || return 1
-		echo2 "Install"
-		install >>"$BUILD_LOG" 2>&1 || return 1
+		do_step prepare || return 1
 	fi
+	echo2 "Build"
+	do_step build || return 1
+	echo2 "Install"
+	do_step install || return 1
 
 	unset -f prepare build install
 	unset SRC_TAR_URL SRC_GIT_URL 
 }
 
 build_packages () {
+	if ! [ "$OPT_NOCLEAN" ]; then
+		sysroot_prepare || return 1
+		rm -rf $BUILD_DIR || return 1
+	else
+		sysroot-overlay-mount || return 1
+	fi
 	echo1 "Building packages"
 	rm -f $BUILD_LOG
 	local packages="$@"
 	if [ -z "$packages" ]; then
-		rm -rf $BUILD_DIR
 		packages="$PACKAGES"
 	fi
 	mkdir -p "$BUILD_DIR" "$BOOTPART_DIR" || return 1
@@ -211,9 +231,7 @@ usage () {
 
 main () {
 	if [ -z "$1" ] || [ "$1" = "build" ]; then
-		if [ -z "$2" ]; then
-			sysroot_prepare || return 1
-		else
+		if ! [ -z "$2" ]; then
 			shift 1
 		fi
 		build_packages "$@" || return 1
@@ -225,7 +243,7 @@ main () {
 	fi
 }
 
-while getopts ":hvn" OPT; do
+while getopts ":hvc" OPT; do
 	case $OPT in
 	h)
 		usage
@@ -234,7 +252,7 @@ while getopts ":hvn" OPT; do
 	v)
 		OPT_VERBOSE=1
 		;;
-	n)
+	c)
 		OPT_NOCLEAN=1
 		;;
 	\?)

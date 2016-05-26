@@ -21,7 +21,7 @@ install () {
 	local target_img_name=vmlinuz-$release
 
 	sudo cp arch/arm/boot/$img_name "$SYSROOT/boot/$target_img_name" || return 1
-	sudo ln -s $target_img_name "$SYSROOT/boot/vmlinuz" || return 1
+	sudo ln -sf $target_img_name "$SYSROOT/boot/vmlinuz" || return 1
 	sudo cp System.map "$SYSROOT/boot/System.map-$release" || return 1
 
 	sudo -E make INSTALL_MOD_PATH="$SYSROOT" modules_install || return 1

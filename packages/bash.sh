@@ -10,5 +10,5 @@ build () {
 
 install () {
 	install_to_sysroot || return 1
-	sudo ln -s bash $SYSROOT/bin/sh
+	sudo ln -sf bash $SYSROOT/bin/sh
 }

@@ -27,10 +27,11 @@ AMA0:2345:respawn:/sbin/agetty ttyAMA0 115200
 '
 
 prepare () {
-	cd src
+	return 0
 }
 
 build () {
+	cd src
 	make CC=${CROSS_COMPILE}gcc
 }
 
