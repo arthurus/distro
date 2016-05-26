@@ -17,7 +17,7 @@ procps
 vim
 kmod
 sysvinit
-sysvinit-scripts
+lfs-bootscripts
 u-boot
 firmware
 "
