@@ -1,5 +1,10 @@
 SRC_GIT_URL="https://github.com/raspberrypi/firmware.git"
 
+CONFIG_TXT="
+boot_delay=0
+dtoverlay=sdio,poll_once=off
+"
+
 prepare () {
 	git pull || return 1
 }
@@ -13,4 +18,5 @@ install () {
 	cp boot/fixup*.dat "$BOOTPART_DIR" || return 1
 	cp boot/start*.elf "$BOOTPART_DIR" || return 1
 	sudo cp -r hardfp/opt/vc "$SYSROOT/opt"
+	echo "$CONFIG_TXT" >> "$BOOTPART_DIR/config.txt"
 }

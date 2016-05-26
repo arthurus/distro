@@ -19,10 +19,16 @@ install () {
 	local release=`make kernelrelease` || return 1
 	local img_name=`make image_name` || return 1
 	local target_img_name=vmlinuz-$release
-	sudo cp arch/arm/boot/$img_name $SYSROOT/boot/$target_img_name || return 1
-	sudo ln -s $target_img_name $SYSROOT/boot/vmlinuz || return 1
-	sudo cp System.map $SYSROOT/boot/System.map-$release || return 1
-	cp arch/arm/boot/dts/bcm2708-rpi-b-plus.dtb $BOOTPART_DIR || return 1
-	# TODO: overlays
-	sudo -E make INSTALL_MOD_PATH=$SYSROOT modules_install || return 1
+
+	sudo cp arch/arm/boot/$img_name "$SYSROOT/boot/$target_img_name" || return 1
+	sudo ln -s $target_img_name "$SYSROOT/boot/vmlinuz" || return 1
+	sudo cp System.map "$SYSROOT/boot/System.map-$release" || return 1
+
+	sudo -E make INSTALL_MOD_PATH="$SYSROOT" modules_install || return 1
+
+	cp arch/arm/boot/dts/bcm2708-rpi-b-plus.dtb "$BOOTPART_DIR" || return 1
+
+	mkdir "$BOOTPART_DIR/overlays"
+	cp arch/arm/boot/dts/overlays/*.dtbo "$BOOTPART_DIR/overlays" || return 1
+	cp arch/arm/boot/dts/overlays/README "$BOOTPART_DIR/overlays" || return 1
 }
