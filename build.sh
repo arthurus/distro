@@ -16,6 +16,8 @@ ncurses
 procps
 vim
 kmod
+sysvinit
+sysvinit-scripts
 u-boot
 firmware
 "
@@ -47,7 +49,7 @@ sysroot_prepare () {
 	sudo chown -R root:root $SYSROOT
 	sysroot-overlay-mount
 	cd $SYSROOT
-	sudo mkdir -p boot dev media mnt opt proc run sys tmp 
+	sudo mkdir -p boot dev media mnt opt proc root run sys tmp var/log
 	sudo ln -sf ../run var/run 
 }
 

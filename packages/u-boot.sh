@@ -1,7 +1,7 @@
 SRC_GIT_URL="git://git.denx.de/u-boot.git"
 
 UBOOT_BOOT_SCR="
-setenv bootargs dwc_otg.lpm_enable=0 console=tty0 console=ttyAMA0,115200 root=/dev/mmcblk0p$ROOT_PART_NO rw rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait init=/bin/bash
+setenv bootargs dwc_otg.lpm_enable=0 console=tty0 console=ttyAMA0,115200 root=/dev/mmcblk0p$ROOT_PART_NO rw rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait
 setenv fdtfile bcm2708-rpi-b-plus.dtb
 mmc dev 0
 ext4load mmc 0:$ROOT_PART_NO \${kernel_addr_r} /boot/vmlinuz
