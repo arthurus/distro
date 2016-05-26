@@ -218,8 +218,6 @@ main () {
 		build_packages "$@" || return 1
 	elif [ "$1" = "install" ]; then
 		install_to_target "$2" || return 1
-	elif [ "$1" = "bootloader" ]; then
-		setup_bootloader || return 1
 	else
 		echo_err "Unknown command: $1"
 		exit 1
