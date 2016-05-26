@@ -44,10 +44,10 @@ echo_err () {
 
 sysroot_prepare () {
 	echo1 "Preparing sysroot"
-	sysroot-overlay-umount
-	sysroot-overlay-erase
+	sysroot-overlay-umount || return 1
+	sysroot-overlay-erase || return 1
 	sudo chown -R root:root $SYSROOT
-	sysroot-overlay-mount
+	sysroot-overlay-mount || return 1
 	cd $SYSROOT
 	sudo mkdir -p boot dev media mnt opt proc root run sys tmp var/log
 	sudo ln -sf ../run var/run 

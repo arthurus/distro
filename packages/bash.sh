@@ -9,6 +9,6 @@ build () {
 }
 
 install () {
-	install_to_sysroot
+	install_to_sysroot || return 1
 	sudo ln -s bash $SYSROOT/bin/sh
 }
