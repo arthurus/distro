@@ -196,7 +196,7 @@ build_packages () {
 		packages="$PACKAGES"
 	fi
 	mkdir -p "$BUILD_DIR" "$BOOTPART_DIR" || return 1
-	for PKG in $packages; do
+	for PKG in `echo "$packages" | grep -v ^\#`; do
 		build_package $PKG || return 1
 	done
 	echo1 "Removing docs"
