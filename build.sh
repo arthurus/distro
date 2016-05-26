@@ -18,6 +18,7 @@ vim
 kmod
 sysvinit
 lfs-bootscripts
+shadow-utils
 u-boot
 firmware
 "
