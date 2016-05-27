@@ -12,7 +12,7 @@ bootz \${kernel_addr_r} - \${fdt_addr_r}
 prepare () {
 	git clean -df || return 1
 	git reset --hard HEAD || return 1
-	git pull || return 1
+	git pull
 	make distclean || return 1
 	make rpi_defconfig || return 1
 }

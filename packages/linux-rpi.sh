@@ -3,7 +3,7 @@ SRC_GIT_URL="https://github.com/raspberrypi/linux.git"
 prepare () {
 	git clean -df || return 1
 	git reset --hard HEAD || return 1
-	git fetch || return 1
+	git fetch
 	git checkout origin/rpi-4.4.y || return 1
 	git branch -D build || return 1
 	git checkout -b build || return 1

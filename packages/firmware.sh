@@ -7,7 +7,8 @@ dtoverlay=sdio,poll_once=off
 "
 
 prepare () {
-	git pull || return 1
+	git pull
+	return 0
 }
 
 build () {

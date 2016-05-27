@@ -76,11 +76,11 @@ do_install_to_target () {
 	if [ -z "$@" ]; then
 		echo2 "Copying root partition files"
 		sudo rm -rf $ROOT_DIR/*
-		sudo cp -a "$SYSROOT/*" $ROOT_DIR || return 1
+		sudo cp -a "$SYSROOT"/* $ROOT_DIR || return 1
 
 		echo2 "Copying boot partition files"
 		sudo rm -rf $BOOT_DIR/*
-		sudo cp -r "$BOOTPART_DIR/*" $BOOT_DIR || return 1
+		sudo cp -r "$BOOTPART_DIR"/* $BOOT_DIR || return 1
 	else
 		OPT_NOCLEAN=1
 		INSTALL_TO_TARGET=1
