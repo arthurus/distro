@@ -52,7 +52,7 @@ sysroot_prepare () {
 	sudo chown -R root:root $SYSROOT
 	sysroot-overlay-mount || return 1
 	cd $SYSROOT
-	sudo mkdir -p boot dev media mnt opt proc root run sys tmp var/log
+	sudo mkdir -p boot boot/firmware dev media mnt opt proc root run sys tmp var/log
 	sudo ln -sf ../run var/run 
 }
 
@@ -72,6 +72,26 @@ find_partition_dev () {
 	fi
 }
 
+do_install_to_target () {
+	if [ -z "$@" ]; then
+		echo2 "Copying root partition files"
+		sudo rm -rf $ROOT_DIR/*
+		sudo cp -a "$SYSROOT/*" $ROOT_DIR || return 1
+
+		echo2 "Copying boot partition files"
+		sudo rm -rf $BOOT_DIR/*
+		sudo cp -r "$BOOTPART_DIR/*" $BOOT_DIR || return 1
+	else
+		OPT_NOCLEAN=1
+		INSTALL_TO_TARGET=1
+		SYSROOT=$ROOT_DIR
+		BOOTPART_DIR=$BOOT_DIR
+		for PKG in "$@"; do
+			build_package || return 1
+		done
+	fi
+}
+
 install_to_target () {
 	echo1 "Installing to target"
 	if [ -z "$1" ]; then
@@ -83,6 +103,7 @@ install_to_target () {
 		echo_err "Target block device $TARGET_DEV does not exist"
 		exit 1
 	fi
+	shift 1
 
 	if ! BOOT_PART=`find_partition_dev $TARGET_DEV $BOOT_PART_NO`; then
 		echo_err "Can't find partition $BOOT_PART_NO on device $TARGET_DEV"
@@ -93,20 +114,22 @@ install_to_target () {
 		exit 1
 	fi
 
-	sudo umount $BOOT_PART >/dev/null 2>&1
+	ROOT_DIR=`mktemp -d`
+	BOOT_DIR=`mktemp -d`
+
 	sudo umount $ROOT_PART >/dev/null 2>&1
+	sudo umount $BOOT_PART >/dev/null 2>&1
 
-	echo2 "Copying root partition files"
-	sudo mount $ROOT_PART /mnt || return 1
-	sudo rm -rf /mnt/*
-	sudo cp -a $SYSROOT/* /mnt || return 1
-	sudo umount /mnt
+	sudo mount $ROOT_PART $ROOT_DIR || return 1
+	sudo mount $BOOT_PART $BOOT_DIR || return 1
 
-	echo2 "Copying boot partition files"
-	sudo mount $BOOT_PART /mnt || return 1
-	sudo rm -rf /mnt/*
-	sudo cp -r $BOOTPART_DIR/* /mnt || return 1
-	sudo umount /mnt
+	do_install_to_target "$@"
+	local ret=$?
+
+	sudo umount $ROOT_DIR && rmdir $ROOT_DIR
+	sudo umount $BOOT_DIR && rmdir $BOOT_DIR
+
+	return $ret
 }
 
 get_source_tar () {
@@ -189,16 +212,18 @@ build_package () {
 
 	echo -e "\e[1;34m---- $PKG ----\e[0m"
 
-	echo2 "Get source"
+	[ ! "$INSTALL_TO_TARGET" ] && echo2 "Get source"
 	get_source || return 1
 
-	if [ ! "$OPT_NOCLEAN" ] || [ $SRC_EXISTS -eq 0 ]; then
-		echo2 "Prepare"
-		do_step prepare || return 1
+	if [ ! "$INSTALL_TO_TARGET" ]; then
+		if [ ! "$OPT_NOCLEAN" ] || [ $SRC_EXISTS -eq 0 ]; then
+			echo2 "Prepare"
+			do_step prepare || return 1
+		fi
+		echo2 "Build"
+		do_step build || return 1
+		echo2 "Install"
 	fi
-	echo2 "Build"
-	do_step build || return 1
-	echo2 "Install"
 	do_step install || return 1
 
 	unset -f prepare build install
@@ -233,12 +258,11 @@ usage () {
 
 main () {
 	if [ -z "$1" ] || [ "$1" = "build" ]; then
-		if ! [ -z "$2" ]; then
-			shift 1
-		fi
+		shift 1
 		build_packages "$@" || return 1
 	elif [ "$1" = "install" ]; then
-		install_to_target "$2" || return 1
+		shift 1
+		install_to_target "$@" || return 1
 	else
 		echo_err "Unknown command: $1"
 		exit 1
