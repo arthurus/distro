@@ -27,7 +27,7 @@ firmware
 
 DIR=$(dirname "`readlink -f \"$0\"`")
 BUILD_DIR="/opt/arm/distro/build"
-PKG_DIR="$DIR/packages"
+PACKAGES_DIR="$DIR/packages"
 REPOS_DIR="/opt/arm/distro/repos"
 SRC_DIR="$HOME/src"
 BUILD_LOG="$DIR/build.log"
@@ -205,7 +205,8 @@ do_step () {
 }
 
 build_package () {
-	if ! source $PKG_DIR/$PKG.sh; then
+	PKG_DIR=$PACKAGES_DIR/$PKG
+	if ! source $PKG_DIR/build.sh; then
 		echo_err "No descriptor file found for package $PKG"
 		exit 1
 	fi
@@ -227,7 +228,7 @@ build_package () {
 	do_step install || return 1
 
 	unset -f prepare build install
-	unset SRC_TAR_URL SRC_GIT_URL 
+	unset PKG_DIR SRC_TAR_URL SRC_GIT_URL
 }
 
 build_packages () {
