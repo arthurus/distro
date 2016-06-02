@@ -235,8 +235,7 @@ get_source () {
 	elif [ -n "$SRC_GIT_URL" ]; then
 		get_source_git
 	else
-		echo_err "No URL to get source"
-		exit 1
+		SRC_EXISTS=1
 	fi
 }
 
@@ -261,7 +260,6 @@ build_package () {
 
 	echo -e "\e[1;34m---- $PKG ----\e[0m"
 
-	[ ! "$INSTALL_TO_TARGET" ] && echo2 "Get source"
 	get_source || return 1
 
 	if [ ! "$INSTALL_TO_TARGET" ]; then
