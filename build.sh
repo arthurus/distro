@@ -45,6 +45,21 @@ echo_err () {
 	echo -e "\e[31m$*\e[0m" 1>&2
 }
 
+check_env () {
+	if [ -z "$TARGET" ]; then
+		echo_err "Environment variable TARGET is not set. This should be set to a GNU target triplet."
+		exit 1
+	fi
+	if [ -z "$TOOLCHAIN" ]; then
+		echo_err "Environment variable TOOLCHAIN is not set. This should be set to the toolchain's root directory."
+		exit 1
+	fi
+	if [ -z "$SYSROOT" ]; then
+		echo_err "Environment variable SYSROOT is not set. This should be set to the target system root directory."
+		exit 1
+	fi
+}
+
 sysroot-overlay-is-mounted () {
 	[ `mount | grep $TARGET-sysroot-overlay | wc -l` -eq 2 ]
 }
@@ -291,6 +306,7 @@ usage () {
 }
 
 main () {
+	check_env
 	if [ -z "$1" ] || [ "$1" = "build" ]; then
 		shift 1
 		build_packages "$@" || return 1
