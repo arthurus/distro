@@ -45,6 +45,39 @@ echo_err () {
 	echo -e "\e[31m$*\e[0m" 1>&2
 }
 
+sysroot-overlay-is-mounted () {
+	[ `mount | grep $TARGET-sysroot-overlay | wc -l` -eq 2 ]
+}
+
+sysroot-overlay-erase () {
+	if sysroot-overlay-is-mounted; then
+		echo >&2 "Sysroot overlay is mounted!"
+		return 1
+	fi
+
+	cd $TOOLCHAIN/$TARGET
+	sudo rm -rf sysroot-overlay-upper/*
+}
+
+sysroot-overlay-mount () {
+	if sysroot-overlay-is-mounted; then
+		return 0
+	fi
+
+	cd $TOOLCHAIN/$TARGET
+	mkdir -p sysroot-overlay-upper sysroot-overlay-workdir sysroot-overlay-merged || return 1
+	sudo mount -t overlay $TARGET-sysroot-overlay -olowerdir=sysroot,upperdir=sysroot-overlay-upper,workdir=sysroot-overlay-workdir sysroot-overlay-merged || return 1
+	sudo mount --bind sysroot-overlay-merged sysroot || return 1
+}
+
+sysroot-overlay-umount () {
+	if ! sysroot-overlay-is-mounted; then
+		return 0
+	fi
+	sudo umount $SYSROOT || return 1
+	sudo umount $TARGET-sysroot-overlay || return 1
+}
+
 sysroot_prepare () {
 	echo1 "Preparing sysroot"
 	sysroot-overlay-umount || return 1
