@@ -23,6 +23,7 @@ shadow-utils
 net-tools
 u-boot
 firmware
+configs
 "
 
 DIR=$(dirname "`readlink -f \"$0\"`")
