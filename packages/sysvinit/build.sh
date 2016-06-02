@@ -1,31 +1,5 @@
 SRC_TAR_URL="http://download.savannah.gnu.org/releases/sysvinit/sysvinit-2.88dsf.tar.bz2"
 
-INITTAB='
-id:3:initdefault:
-
-si::sysinit:/etc/rc.d/init.d/rc S
-
-l0:0:wait:/etc/rc.d/init.d/rc 0
-l1:S1:wait:/etc/rc.d/init.d/rc 1
-l2:2:wait:/etc/rc.d/init.d/rc 2
-l3:3:wait:/etc/rc.d/init.d/rc 3
-l4:4:wait:/etc/rc.d/init.d/rc 4
-l5:5:wait:/etc/rc.d/init.d/rc 5
-l6:6:wait:/etc/rc.d/init.d/rc 6
-
-ca:12345:ctrlaltdel:/sbin/shutdown -t1 -a -r now
-
-~:S:wait:/sbin/sulogin
-
-1:2345:respawn:/sbin/agetty tty1 VC linux
-2:2345:respawn:/sbin/agetty tty2 VC linux
-3:2345:respawn:/sbin/agetty tty3 VC linux
-4:2345:respawn:/sbin/agetty tty4 VC linux
-5:2345:respawn:/sbin/agetty tty5 VC linux
-6:2345:respawn:/sbin/agetty tty6 VC linux
-AMA0:2345:respawn:/sbin/agetty ttyAMA0 115200
-'
-
 prepare () {
 	return 0
 }
@@ -37,5 +11,5 @@ build () {
 
 install () {
 	sudo make ROOT="$SYSROOT" install || return 1
-	echo "$INITTAB" | sudo tee "$SYSROOT/etc/inittab" >/dev/null
+	sudo cp $PKG_DIR/inittab "$SYSROOT/etc/"
 }
