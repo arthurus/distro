@@ -8,7 +8,8 @@ prepare () {
 	git branch -D build || return 1
 	git checkout -b build || return 1
 	make distclean || return 1
-	make bcmrpi_defconfig || return 1
+	#make bcmrpi_defconfig || return 1
+	cp $PKG_DIR/config .config
 }
 
 build () {
