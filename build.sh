@@ -301,7 +301,19 @@ build_packages () {
 }
 
 usage () {
-	echo "Usage:"
+	echo "\
+Usage: $(basename $0) [OPTION]... [COMMAND] [DEVICE] [PACKAGE]...
+
+  -h    show help
+  -v    verbose output
+  -c    don't clean sysroot and build directories
+
+COMMAND can be:
+  build      build entire system or individual PACKAGE(s)
+  install    install entire system or individual PACKAGE(s) to DEVICE
+
+Empty command equals to 'build entire system'.
+"
 }
 
 main () {
@@ -313,7 +325,7 @@ main () {
 		shift 1
 		install_to_target "$@" || return 1
 	else
-		echo_err "Unknown command: $1"
+		echo_err "Unknown command: $1. Use -h to show usage."
 		exit 1
 	fi
 }
@@ -331,7 +343,7 @@ while getopts ":hvc" OPT; do
 		OPT_NOCLEAN=1
 		;;
 	\?)
-		echo_err "Invalid Option: $OPTARG"
+		echo_err "Invalid Option: $OPTARG. Use -h to show usage."
 		exit 1
 		;;
 	esac
