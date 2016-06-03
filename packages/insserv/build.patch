@@ -1,0 +1,29 @@
+--- a/Makefile
++++ b/Makefile
+@@ -134,7 +134,7 @@ else
+ 	tests/common
+ endif
+ 
+-install:	$(TODO) check
++install:	$(TODO)
+ 	$(MKDIR)   $(SBINDIR)
+ 	$(MKDIR)   $(SDOCDIR)
+ 	$(MKDIR)   $(CONFDIR)
+--- a/listing.h
++++ b/listing.h
+@@ -34,7 +34,6 @@ typedef unsigned int uint;
+ #ifndef __OPTIMIZE__
+ # warning This will not compile without -O at least
+ #endif
+-#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L)
+ # ifndef  inline
+ #  define inline		__inline__
+ # endif
+@@ -50,7 +49,6 @@ typedef unsigned int uint;
+ # ifndef  extension
+ #  define extension		__extension__
+ # endif
+-#endif
+ #ifndef  attribute
+ # define attribute(attr)	__attribute__(attr)
+ #endif

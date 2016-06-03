@@ -18,6 +18,7 @@ procps
 vim
 kmod
 sysvinit
+insserv
 lfs-bootscripts
 shadow-utils
 net-tools
