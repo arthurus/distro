@@ -25,6 +25,7 @@ insserv
 lfs-bootscripts
 shadow-utils
 net-tools
+libmnl
 u-boot
 firmware
 configs
