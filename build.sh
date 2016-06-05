@@ -7,13 +7,13 @@ ROOT_PART_NO=3
 
 PACKAGES="
 linux-rpi
+ncurses
 bash
 coreutils
 util-linux
 grep
 sed
 findutils
-ncurses
 procps
 vim
 kmod
@@ -34,6 +34,8 @@ REPOS_DIR="/opt/arm/distro/repos"
 SRC_DIR="$HOME/src"
 BUILD_LOG="$DIR/build.log"
 BOOTPART_DIR="$BUILD_DIR/bootpart"
+export PKG_CONFIG_PATH=""
+export PKG_CONFIG_LIBDIR="$SYSROOT/usr/lib/pkgconfig:$SYSROOT/usr/share/pkgconfig"
 
 echo1 () {
 	echo -e "\e[1;33m$*\e[0m"
@@ -201,7 +203,7 @@ get_source_tar () {
 	fi
 
 	cd $BUILD_DIR
-	local tar_dir=`tar tf "$SRC_DIR/$f" | head -1`
+	local tar_dir=`tar tf "$SRC_DIR/$f" | head -1 | cut -d/ -f1`
 	if [ -d "$tar_dir" ] && [ "$OPT_NOCLEAN" ]; then
 		SRC_EXISTS=1
 		cd "$tar_dir" && return 0
