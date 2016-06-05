@@ -15,6 +15,7 @@ grep
 sed
 gawk
 less
+which
 findutils
 procps
 vim
