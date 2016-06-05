@@ -26,6 +26,7 @@ lfs-bootscripts
 shadow-utils
 net-tools
 libmnl
+iproute2
 u-boot
 firmware
 configs
