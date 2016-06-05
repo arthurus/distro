@@ -13,6 +13,7 @@ coreutils
 util-linux
 grep
 sed
+gawk
 findutils
 procps
 vim
