@@ -14,6 +14,7 @@ util-linux
 grep
 sed
 gawk
+less
 findutils
 procps
 vim
