@@ -27,6 +27,7 @@ shadow-utils
 net-tools
 libmnl
 iproute2
+dhcpcd
 u-boot
 firmware
 configs
