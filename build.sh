@@ -28,6 +28,7 @@ net-tools
 libmnl
 iproute2
 dhcpcd
+e2fsprogs
 dosfstools
 u-boot
 firmware
