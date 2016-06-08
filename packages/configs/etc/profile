@@ -1,0 +1,11 @@
+PS1='\u@\h:\w'
+
+if [ "$UID" -eq 0 ]; then
+        PS1="$PS1 # "
+else
+        PS1="$PS1> "
+fi
+
+alias ll='ls -l'
+alias la='ls -la'
+alias ..='cd ..'
