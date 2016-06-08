@@ -15,5 +15,6 @@ build () {
 }
 
 install () {
-	install_to_sysroot
+	install_to_sysroot || return 1
+	sudo cp "$PKG_DIR/vimrc" "$SYSROOT/usr/share/vim/"
 }
