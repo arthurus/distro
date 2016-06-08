@@ -8,6 +8,7 @@ ROOT_PART_NO=3
 PACKAGES="
 linux-rpi
 ncurses
+zlib
 bash
 coreutils
 util-linux
