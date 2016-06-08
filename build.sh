@@ -9,6 +9,7 @@ PACKAGES="
 linux-rpi
 ncurses
 zlib
+libressl
 bash
 coreutils
 util-linux
