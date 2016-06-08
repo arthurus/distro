@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIG_SHARED="--host=$TARGET --build=x86_64-pc-linux-gnu --prefix=/usr --exec-prefix=/ --sysconfdir=/etc --disable-nls"
+CONFIG_SHARED="--host=$TARGET --build=x86_64-pc-linux-gnu --prefix=/usr --exec-prefix=/ --sysconfdir=/etc --localstatedir=/var --disable-nls"
 
 BOOT_PART_NO=1
 ROOT_PART_NO=3
