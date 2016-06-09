@@ -32,6 +32,7 @@ iproute2
 dhcpcd
 e2fsprogs
 dosfstools
+openssh
 u-boot
 firmware
 configs

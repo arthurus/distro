@@ -1,0 +1,12 @@
+*** Makefile.in.orig	Fri Jun 10 01:19:33 2016
+--- Makefile.in	Fri Jun 10 01:19:42 2016
+***************
+*** 291,297 ****
+  install-nosysconf: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files
+  
+  check-config:
+- 	-$(DESTDIR)$(sbindir)/sshd -t -f $(DESTDIR)$(sysconfdir)/sshd_config
+  
+  install-files:
+  	$(srcdir)/mkinstalldirs $(DESTDIR)$(bindir)
+--- 291,296 ----
