@@ -1,7 +1,49 @@
 connman
-dropbear
 readline
 kbd
 screen
 iputils
 file
+man
+info
+klogd/syslogd
+---
+[u-boot] kernel parameters in cmdline.txt
+disable static in all libraries
+"remember to run 'libtool --finish //lib'"
+replace cp with install
+compare all packages with (C)LFS
+write stdout/stderr from commands in init scripts to boot.log and not to console
+---
+LSB commands missing:
+ar
+at
+batch
+bc
+cpio
+crontab
+file
+fuser
+gettext
+gzip
+install_initd
+killall
+lpr
+lsb_release
+m4
+msgfmt
+patch
+remove_initd
+sendmail
+tar
+zcat
+cmp
+diff
+ed
+lp
+mailx
+make
+man
+pax
+strings
+strip
