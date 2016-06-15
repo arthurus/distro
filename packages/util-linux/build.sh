@@ -2,7 +2,7 @@ SRC_TAR_URL="https://www.kernel.org/pub/linux/utils/util-linux/v2.28/util-linux-
 
 prepare () {
 	./autogen.sh
-	./configure $CONFIG_SHARED --without-python
+	./configure $CONFIG_SHARED --libdir=/usr/lib --without-python
 }
 
 build () {

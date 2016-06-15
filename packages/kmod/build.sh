@@ -1,7 +1,7 @@
 SRC_TAR_URL="https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-22.tar.xz"
 
 prepare () {
-	./configure $CONFIG_SHARED
+	./configure $CONFIG_SHARED --libdir=/usr/lib
 }
 
 build () {
