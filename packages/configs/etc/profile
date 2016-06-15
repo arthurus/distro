@@ -6,6 +6,8 @@ else
         PS1="$PS1> "
 fi
 
+export LS_OPTIONS='--color=auto'
+alias ls='ls $LS_OPTIONS'
 alias ll='ls -l'
 alias la='ls -la'
 alias ..='cd ..'
