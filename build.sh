@@ -17,6 +17,8 @@ grep
 sed
 gawk
 less
+tar
+gzip
 which
 findutils
 procps

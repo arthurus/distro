@@ -25,7 +25,6 @@ crontab
 file
 fuser
 gettext
-gzip
 install_initd
 killall
 lpr
@@ -35,8 +34,6 @@ msgfmt
 patch
 remove_initd
 sendmail
-tar
-zcat
 cmp
 diff
 ed
