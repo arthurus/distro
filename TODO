@@ -31,7 +31,6 @@ lpr
 lsb_release
 m4
 msgfmt
-patch
 remove_initd
 sendmail
 ed

@@ -20,6 +20,7 @@ less
 tar
 gzip
 which
+patch
 diffutils
 findutils
 procps
