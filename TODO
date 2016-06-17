@@ -34,8 +34,6 @@ msgfmt
 patch
 remove_initd
 sendmail
-cmp
-diff
 ed
 lp
 mailx

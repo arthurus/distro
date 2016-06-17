@@ -20,6 +20,7 @@ less
 tar
 gzip
 which
+diffutils
 findutils
 procps
 vim
