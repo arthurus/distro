@@ -3,7 +3,6 @@ readline
 kbd
 screen
 iputils
-file
 man
 info
 klogd/syslogd
@@ -22,7 +21,6 @@ batch
 bc
 cpio
 crontab
-file
 fuser
 gettext
 install_initd

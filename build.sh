@@ -37,6 +37,7 @@ dhcpcd
 e2fsprogs
 dosfstools
 openssh
+file
 u-boot
 firmware
 configs
@@ -47,7 +48,7 @@ BUILD_DIR="/opt/arm/distro/build"
 PACKAGES_DIR="$DIR/packages"
 REPOS_DIR="/opt/arm/distro/repos"
 SRC_DIR="$HOME/src"
-BUILD_LOG="$DIR/build.log"
+BUILD_LOG="$BUILD_DIR/build.log"
 BOOTPART_DIR="$BUILD_DIR/bootpart"
 export PKG_CONFIG_PATH=""
 export PKG_CONFIG_LIBDIR="$SYSROOT/usr/lib/pkgconfig:$SYSROOT/usr/share/pkgconfig"
