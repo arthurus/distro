@@ -3,7 +3,6 @@ readline
 kbd
 screen
 iputils
-man
 info
 klogd/syslogd
 ---
@@ -35,7 +34,6 @@ ed
 lp
 mailx
 make
-man
 pax
 strings
 strip

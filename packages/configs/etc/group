@@ -1,3 +1,6 @@
 root:x:0:
+bin:x:1:
+daemon:x:2:
 tty:x:5:
+man:x:13:
 sshd:*:27:

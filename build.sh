@@ -10,6 +10,8 @@ linux-rpi
 ncurses
 zlib
 libressl
+libpipeline
+gdbm
 bash
 coreutils
 util-linux
@@ -38,6 +40,8 @@ e2fsprogs
 dosfstools
 openssh
 file
+groff
+man-db
 u-boot
 firmware
 configs
@@ -314,9 +318,6 @@ build_packages () {
 	for PKG in `echo "$packages" | grep -v ^\#`; do
 		build_package $PKG || return 1
 	done
-	echo1 "Removing docs"
-	sudo rm -rf $SYSROOT/usr/share/doc
-	sudo rm -rf $SYSROOT/usr/share/man
 }
 
 usage () {
