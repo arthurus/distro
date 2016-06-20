@@ -1,0 +1,38 @@
+*** Makefile.in.orig	Tue Jun 21 00:11:44 2016
+--- Makefile.in	Tue Jun 21 00:12:14 2016
+***************
+*** 14384,14416 ****
+  @SINGLE_BINARY_FALSE@man/whoami.1:    src/whoami$(EXEEXT)
+  @SINGLE_BINARY_FALSE@man/yes.1:       src/yes$(EXEEXT)
+  
+- .x.1:
+- 	$(AM_V_GEN)name=`echo $@ | sed 's|.*/||; s|\.1$$||'` || exit 1;	\
+- 	case $$name in							\
+- 	  install) prog='ginstall'; argv=$$name;;			\
+- 	     test) prog='['; argv='[';;					\
+- 		*) prog=$$name; argv=$$prog;;				\
+- 	esac;								\
+- 	rm -f $@ $@-t							\
+- 	  && t=$*.td							\
+- 	  && rm -rf $$t							\
+- 	  && $(MKDIR_P) $$t						\
+- 	  && (cd $$t && $(LN_S) '$(abs_top_builddir)/src/'$$prog$(EXEEXT) \
+- 				$$argv$(EXEEXT))			\
+- 	&& : $${SOURCE_DATE_EPOCH=`cat $(srcdir)/.timestamp 2>/dev/null || :`} \
+- 	&& export SOURCE_DATE_EPOCH && $(run_help2man)			\
+- 		     --source='$(PACKAGE_STRING)'			\
+- 		     --include=$(srcdir)/man/$$name.x			\
+- 		     --output=$$t/$$name.1				\
+- 		     --info-page='\(aq(coreutils) '$$name' invocation\(aq' \
+- 		     $$t/$$argv$(EXEEXT)				\
+- 	  && sed \
+- 	       -e 's|$*\.td/||g' \
+- 	       -e '/For complete documentation/d' \
+- 	       $$t/$$name.1 > $@-t			\
+- 	  && rm -rf $$t							\
+- 	  && chmod a-w $@-t						\
+- 	  && mv $@-t $@
+  .PHONY: check-root
+  check-root:
+  	$(MAKE) check TESTS='$(root_tests)' SUBDIRS=.
+--- 14384,14389 ----
