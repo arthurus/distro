@@ -1,0 +1,38 @@
+*** aclocal.m4.orig	Mon Jun 20 23:05:35 2016
+--- aclocal.m4	Mon Jun 20 23:05:46 2016
+***************
+*** 1762,1794 ****
+          AC_DEFINE(HAVE_WINT_T, 1, [systems should define this type here])
+  fi
+  
+- dnl check for broken wcwidth
+- AC_CACHE_CHECK([for wcwidth broken with unicode combining characters],
+- bash_cv_wcwidth_broken,
+- [AC_TRY_RUN([
+- #include <unistd.h>
+- #include <stdlib.h>
+- #include <stdio.h>
+- 
+- #include <locale.h>
+- #include <wchar.h>
+- 
+- main(c, v)
+- int     c;
+- char    **v;
+- {
+-         int     w;
+- 
+-         setlocale(LC_ALL, "en_US.UTF-8");
+-         w = wcwidth (0x0301);
+-         exit (w == 0);  /* exit 0 if wcwidth broken */
+- }
+- ],
+- bash_cv_wcwidth_broken=yes, bash_cv_wcwdith_broken=no, bash_cv_wcwidth_broken=no)])
+- if test "$bash_cv_wcwidth_broken" = yes; then
+-         AC_DEFINE(WCWIDTH_BROKEN, 1, [wcwidth is usually not broken])
+- fi
+- 
+  if test "$am_cv_func_iconv" = yes; then
+  	OLDLIBS="$LIBS"
+  	LIBS="$LIBS $LIBICONV"
+--- 1762,1767 ----

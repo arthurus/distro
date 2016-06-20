@@ -12,6 +12,7 @@ zlib
 libressl
 libpipeline
 gdbm
+readline
 bash
 coreutils
 util-linux
