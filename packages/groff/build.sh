@@ -5,7 +5,7 @@ prepare () {
 }
 
 build () {
-	make -j`nproc` TROFFBIN=troff GROFFBIN=groff GROFF_BIN_PATH=
+	make TROFFBIN=troff GROFFBIN=groff GROFF_BIN_PATH=
 }
 
 install () {

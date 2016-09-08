@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIG_SHARED="--host=$TARGET --build=x86_64-pc-linux-gnu --prefix=/usr --exec-prefix=/ --sysconfdir=/etc --localstatedir=/var --disable-nls"
+CONFIG_SHARED="--host=$TARGET --build=$MACHTYPE --prefix=/usr --exec-prefix=/ --sysconfdir=/etc --localstatedir=/var --disable-nls"
 
 BOOT_PART_NO=1
 ROOT_PART_NO=3
@@ -96,7 +96,7 @@ sysroot-overlay-erase () {
 	fi
 
 	cd $TOOLCHAIN/$TARGET
-	sudo rm -rf sysroot-overlay-upper/*
+	sudo rm -rf sysroot-overlay-upper
 }
 
 sysroot-overlay-mount () {
@@ -106,8 +106,8 @@ sysroot-overlay-mount () {
 
 	cd $TOOLCHAIN/$TARGET
 	mkdir -p sysroot-overlay-upper sysroot-overlay-workdir sysroot-overlay-merged || return 1
-	sudo mount -t overlay $TARGET-sysroot-overlay -olowerdir=sysroot,upperdir=sysroot-overlay-upper,workdir=sysroot-overlay-workdir sysroot-overlay-merged || return 1
-	sudo mount --bind sysroot-overlay-merged sysroot || return 1
+	sudo mount -t overlay $TARGET-sysroot-overlay -olowerdir=$SYSROOT,upperdir=sysroot-overlay-upper,workdir=sysroot-overlay-workdir sysroot-overlay-merged || return 1
+	sudo mount --bind sysroot-overlay-merged $SYSROOT || return 1
 }
 
 sysroot-overlay-umount () {
@@ -125,7 +125,7 @@ sysroot_prepare () {
 	sudo chown -R root:root $SYSROOT
 	sysroot-overlay-mount || return 1
 	cd $SYSROOT
-	sudo mkdir -p boot boot/firmware dev media mnt opt proc root run sys tmp var/log
+	sudo mkdir -p boot boot/firmware dev etc/opt home media mnt opt proc root run srv sys tmp usr/local var/{cache,lib,local,lock,log,opt,spool,tmp}
 	sudo ln -sf ../run var/run 
 }
 

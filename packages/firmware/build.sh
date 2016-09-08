@@ -3,11 +3,11 @@ SRC_GIT_URL="https://github.com/raspberrypi/firmware.git"
 CONFIG_TXT="
 kernel=u-boot.bin
 boot_delay=0
-dtoverlay=sdio,poll_once=off
 "
 
 prepare () {
-	git pull
+	git fetch
+	git checkout 1.20160620
 	return 0
 }
 
