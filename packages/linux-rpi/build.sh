@@ -1,15 +1,14 @@
 SRC_GIT_URL="https://github.com/raspberrypi/linux.git"
 
 prepare () {
-	git clean -df || return 1
-	git reset --hard HEAD || return 1
-	git fetch
-	git checkout origin/rpi-4.4.y || return 1
-	git branch -D build || return 1
-	git checkout -b build || return 1
-	make distclean || return 1
+	#git clean -df || return 1
+	#git reset --hard HEAD || return 1
+	#git fetch
+	#git checkout origin/rpi-4.4.y || return 1
+	#make distclean || return 1
 	#make bcmrpi_defconfig || return 1
-	cp $PKG_DIR/config .config
+	#cp $PKG_DIR/config .config
+	return 0
 }
 
 build () {
@@ -27,9 +26,9 @@ install () {
 
 	sudo -E make INSTALL_MOD_PATH="$SYSROOT" modules_install || return 1
 
-	cp arch/arm/boot/dts/bcm2708-rpi-b-plus.dtb "$BOOTPART_DIR" || return 1
+	sudo cp arch/arm/boot/dts/bcm2708-rpi-b-plus.dtb "$SYSROOT/boot/" || return 1
 
-	mkdir "$BOOTPART_DIR/overlays"
-	cp arch/arm/boot/dts/overlays/*.dtbo "$BOOTPART_DIR/overlays" || return 1
-	cp arch/arm/boot/dts/overlays/README "$BOOTPART_DIR/overlays" || return 1
+	#mkdir "$BOOTPART_DIR/overlays"
+	#cp arch/arm/boot/dts/overlays/*.dtbo "$BOOTPART_DIR/overlays" || return 1
+	#cp arch/arm/boot/dts/overlays/README "$BOOTPART_DIR/overlays" || return 1
 }
