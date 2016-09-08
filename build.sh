@@ -294,7 +294,7 @@ do_step () {
 
 build_package () {
 	PKG_DIR=$PACKAGES_DIR/$PKG
-	if ! source $PKG_DIR/build.sh; then
+	if ! source $PKG_DIR/package.sh; then
 		echo_err "No descriptor file found for package $PKG"
 		exit 1
 	fi
