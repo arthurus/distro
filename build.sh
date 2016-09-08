@@ -145,6 +145,20 @@ find_partition_dev () {
 	fi
 }
 
+prepare_partitions () {
+	echo2 "Creating partitions"
+	sudo /usr/sbin/parted -s $TARGET_DEV mklabel msdos || return 1
+	sudo /usr/sbin/parted -s -a opt $TARGET_DEV mkpart primary fat32 1 50M || return 1
+	sudo /usr/sbin/parted -s -a opt $TARGET_DEV mkpart primary linux-swap 50M 1G || return 1
+	sudo /usr/sbin/parted -s -a opt $TARGET_DEV mkpart primary ext4 1G 100% || return 1
+	echo2 "Creating boot filesystem"
+	sudo /sbin/mkfs.vfat ${TARGET_DEV}1 || return 1
+	echo2 "Creating swap"
+	sudo /sbin/mkswap ${TARGET_DEV}2 || return 1
+	echo2 "Creating root filesystem"
+	echo y | sudo /sbin/mkfs.ext4 ${TARGET_DEV}3 || return 1
+}
+
 do_install_to_target () {
 	if [ -z "$@" ]; then
 		echo2 "Copying root partition files"
@@ -177,6 +191,8 @@ install_to_target () {
 		exit 1
 	fi
 	shift 1
+
+	prepare_partitions || return 1
 
 	if ! BOOT_PART=`find_partition_dev $TARGET_DEV $BOOT_PART_NO`; then
 		echo_err "Can't find partition $BOOT_PART_NO on device $TARGET_DEV"
