@@ -1,0 +1,105 @@
+diff --git a/Makefile b/Makefile
+index 4686c6f..25120c2 100644
+--- a/Makefile
++++ b/Makefile
+@@ -45,10 +45,7 @@ files: create-dirs
+ 	install -m ${MODE} lfs/init.d/setclock      ${ETCDIR}/rc.d/init.d/
+ 	install -m ${MODE} lfs/init.d/swap          ${ETCDIR}/rc.d/init.d/
+ 	install -m ${MODE} lfs/init.d/sysctl        ${ETCDIR}/rc.d/init.d/
+-	install -m ${MODE} lfs/init.d/sysklogd      ${ETCDIR}/rc.d/init.d/
+ 	install -m ${MODE} lfs/init.d/template      ${ETCDIR}/rc.d/init.d/
+-	install -m ${MODE} lfs/init.d/udev          ${ETCDIR}/rc.d/init.d/
+-	install -m ${MODE} lfs/init.d/udev_retry    ${ETCDIR}/rc.d/init.d/
+ 	install -m ${MODE} lfs/sbin/ifup            ${SBIN}
+ 	install -m ${MODE} lfs/sbin/ifdown          ${SBIN}
+ 	install -m ${CONFMODE} lfs/sbin/ifup.8      ${MAN8}
+@@ -63,9 +60,6 @@ files: create-dirs
+ 	if [ ! -f ${ETCDIR}/sysconfig/modules     ]; then \
+           install -m ${CONFMODE} lfs/sysconfig/modules     ${ETCDIR}/sysconfig/ ;\
+         fi
+-	if [ ! -f ${ETCDIR}/sysconfig/udev_retry  ]; then \
+-          install -m ${CONFMODE} lfs/sysconfig/udev_retry  ${ETCDIR}/sysconfig/ ;\
+-        fi
+ 	if [ ! -f ${ETCDIR}/sysconfig/rc.site     ]; then \
+           install -m ${CONFMODE} lfs/sysconfig/rc.site     ${ETCDIR}/sysconfig/ ;\
+         fi
+diff --git a/lfs/init.d/checkfs b/lfs/init.d/checkfs
+index c711e4a..c235a06 100644
+--- a/lfs/init.d/checkfs
++++ b/lfs/init.d/checkfs
+@@ -27,7 +27,7 @@
+ 
+ ### BEGIN INIT INFO
+ # Provides:            checkfs
+-# Required-Start:      udev swap $time
++# Required-Start:      swap $time
+ # Should-Start:
+ # Required-Stop:
+ # Should-Stop:
+diff --git a/lfs/init.d/mountfs b/lfs/init.d/mountfs
+index 4605d60..02007a2 100644
+--- a/lfs/init.d/mountfs
++++ b/lfs/init.d/mountfs
+@@ -13,8 +13,8 @@
+ ########################################################################
+ 
+ ### BEGIN INIT INFO
+-# Provides:            $local_fs
+-# Required-Start:      udev checkfs
++# Provides:            boot.localfs
++# Required-Start:      checkfs
+ # Should-Start:
+ # Required-Stop:       swap
+ # Should-Stop:
+diff --git a/lfs/init.d/network b/lfs/init.d/network
+index c341235..9578acc 100644
+--- a/lfs/init.d/network
++++ b/lfs/init.d/network
+@@ -15,7 +15,7 @@
+ ########################################################################
+ 
+ ### BEGIN INIT INFO
+-# Provides:            $network
++# Provides:            network
+ # Required-Start:      $local_fs swap localnet
+ # Should-Start:        $syslog
+ # Required-Stop:       $local_fs swap localnet
+diff --git a/lfs/init.d/sendsignals b/lfs/init.d/sendsignals
+index 55de311..874421f 100644
+--- a/lfs/init.d/sendsignals
++++ b/lfs/init.d/sendsignals
+@@ -18,7 +18,7 @@
+ # Should-Start:
+ # Required-Stop:       $local_fs swap localnet
+ # Should-Stop:
+-# Default-Start:
++# Default-Start:       0 6
+ # Default-Stop:        0 6
+ # Short-Description:   Attempts to kill remaining processes.
+ # Description:         Attempts to kill remaining processes.
+diff --git a/lfs/init.d/setclock b/lfs/init.d/setclock
+index 8bf3f40..cda50e7 100644
+--- a/lfs/init.d/setclock
++++ b/lfs/init.d/setclock
+@@ -13,7 +13,7 @@
+ ########################################################################
+ 
+ ### BEGIN INIT INFO
+-# Provides:            
++# Provides:            boot.clock
+ # Required-Start:
+ # Should-Start:        modules
+ # Required-Stop:
+diff --git a/lfs/init.d/swap b/lfs/init.d/swap
+index 1198ee4..45bdad3 100644
+--- a/lfs/init.d/swap
++++ b/lfs/init.d/swap
+@@ -14,7 +14,7 @@
+ 
+ ### BEGIN INIT INFO
+ # Provides:            swap
+-# Required-Start:      udev
++# Required-Start:
+ # Should-Start:        modules
+ # Required-Stop:       localnet
+ # Should-Stop:
