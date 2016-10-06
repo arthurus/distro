@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIG_SHARED="--host=$TARGET --build=$MACHTYPE --prefix=/usr --exec-prefix=/ --sysconfdir=/etc --localstatedir=/var --disable-nls"
+CONFIG_SHARED="--host=$TARGET --build=$MACHTYPE --prefix=/usr --exec-prefix=/ --sysconfdir=/etc --localstatedir=/var --disable-nls --disable-rpath"
 
 BOOT_PART_NO=1
 ROOT_PART_NO=3
