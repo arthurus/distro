@@ -55,6 +55,7 @@ REPOS_DIR="/opt/arm/distro/repos"
 SRC_DIR="$HOME/src"
 BUILD_LOG="$BUILD_DIR/build.log"
 BOOTPART_DIR="$BUILD_DIR/bootpart"
+HOSTTOOLS_DIR="$BUILD_DIR/host-tools"
 export PKG_CONFIG_PATH=""
 export PKG_CONFIG_LIBDIR="$SYSROOT/usr/lib/pkgconfig:$SYSROOT/usr/share/pkgconfig"
 
@@ -331,7 +332,7 @@ build_packages () {
 	if [ -z "$packages" ]; then
 		packages="$PACKAGES"
 	fi
-	mkdir -p "$BUILD_DIR" "$BOOTPART_DIR" || return 1
+	mkdir -p "$BUILD_DIR" "$BOOTPART_DIR" "$HOSTTOOLS_DIR" || return 1
 	for PKG in `echo "$packages" | grep -v ^\#`; do
 		build_package $PKG || return 1
 	done
