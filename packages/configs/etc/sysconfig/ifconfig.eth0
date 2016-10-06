@@ -3,3 +3,6 @@ IFACE="eth0"
 SERVICE="dhcpcd"
 DHCP_START="-b -q"
 DHCP_STOP="-k"
+
+#SERVICE="ipv4-static"
+#IP="192.168.1.128"
